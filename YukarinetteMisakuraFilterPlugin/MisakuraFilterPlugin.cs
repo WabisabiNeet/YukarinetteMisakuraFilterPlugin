@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Yukarinette;
+using System.Windows.Controls;
 
 namespace YukarinetteMisakuraFilterPlugin
 {
@@ -69,10 +70,19 @@ namespace YukarinetteMisakuraFilterPlugin
         };
         #endregion
 
+        private SettingPanel _SettingPanel;
+
         public override string Name => "みさくら語コンバーター with ゆかりねっと";
 
-        protected MisakuraFilterPlugin()
+        public MisakuraFilterPlugin()
+            : base()
         {
+            _SettingPanel = new SettingPanel();
+        }
+
+        public override UserControl GetSettingUserControl()
+        {
+            return _SettingPanel;
         }
 
         public override YukarinetteFilterPluginResult Filtering(string text, YukarinetteWordDetailData[] words)
@@ -86,7 +96,7 @@ namespace YukarinetteMisakuraFilterPlugin
         public string Convert2Misakura(string str)
         {
             var coverted = string.Copy(str);
-            foreach(var p in misakuraPatterns)
+            foreach (var p in misakuraPatterns)
             {
                 coverted = Regex.Replace(coverted, p.Key, p.Value);
             }
