@@ -12,7 +12,7 @@ namespace YukarinetteMisakuraFilterPlugin
     public class MisakuraFilterPlugin : IYukarinetteFilterInterface
     {
         #region misakuraPatterns
-        private static List<KeyValuePair<string, string>> misakuraPatterns = new List<KeyValuePair<string, string>>
+        private static List<KeyValuePair<string, string>> misakuraPatterns = new List<KeyValuePair<string, string>>()
         {
             new KeyValuePair<string, string>("(気持|きも)ちいい", "ぎも゛ぢい゛い゛ぃ"),
             new KeyValuePair<string, string>("(大好|だいす)き", "らいしゅきいぃっ"),
