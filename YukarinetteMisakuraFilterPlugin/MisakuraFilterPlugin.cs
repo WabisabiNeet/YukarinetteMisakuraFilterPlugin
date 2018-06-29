@@ -71,6 +71,7 @@ namespace YukarinetteMisakuraFilterPlugin
         #endregion
 
         private SettingPanel _SettingPanel;
+        private Random r = new System.Random();
 
         public override string Name => "みさくら語コンバーター with ゆかりねっと";
 
@@ -95,12 +96,25 @@ namespace YukarinetteMisakuraFilterPlugin
 
         public string Convert2Misakura(string str)
         {
-            var coverted = string.Copy(str);
-            foreach (var p in misakuraPatterns)
+            string ret = str;
+            int probability = (int)_SettingPanel.slider.Value;
+            if (ApproveConerting(probability))
             {
-                coverted = Regex.Replace(coverted, p.Key, p.Value);
+                var coverted = string.Copy(str);
+                foreach (var p in misakuraPatterns)
+                {
+                    coverted = Regex.Replace(coverted, p.Key, p.Value);
+                }
+                ret = coverted;
             }
-            return coverted;
+
+            return ret;
+        }
+
+        public bool ApproveConerting(int probability)
+        {
+            var rval = r.Next(100);
+            return rval < probability;
         }
     }
 }
