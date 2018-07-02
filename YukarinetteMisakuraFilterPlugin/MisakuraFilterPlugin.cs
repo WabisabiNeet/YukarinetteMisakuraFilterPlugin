@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Yukarinette;
 using System.Windows.Controls;
+using log4net;
 
 namespace YukarinetteMisakuraFilterPlugin
 {
@@ -70,6 +71,8 @@ namespace YukarinetteMisakuraFilterPlugin
         };
         #endregion
 
+        private static readonly ILog LOG = LogManager.GetLogger("LogAppender");
+
         private SettingPanel _SettingPanel;
         private Random r = new System.Random();
 
@@ -88,19 +91,35 @@ namespace YukarinetteMisakuraFilterPlugin
 
         public override YukarinetteFilterPluginResult Filtering(string text, YukarinetteWordDetailData[] words)
         {
-            var ret = new YukarinetteFilterPluginResult();
-            ret.Text = Convert2Misakura(text);
+            LOG.Info($"input:{text}");
 
+            var ret = new YukarinetteFilterPluginResult()
+            {
+                Text = text
+            };
+
+            try
+            {
+                ret.Text = Convert2Misakura(text);
+            }
+            catch(Exception ex)
+            {
+                LOG.Error($"{ex.ToString()}");
+            }
+
+            LOG.Info($"converted:{ret.Text}");
             return ret;
         }
 
         public string Convert2Misakura(string str)
         {
             string ret = str;
-            int probability = (int)_SettingPanel.slider.Value;
+            var coverted = string.Copy(str);
+            int probability = 0;
+
+            _SettingPanel.Dispatcher.Invoke(new Action(() => probability = (int)_SettingPanel.slider.Value));
             if (ApproveConerting(probability))
             {
-                var coverted = string.Copy(str);
                 foreach (var p in misakuraPatterns)
                 {
                     coverted = Regex.Replace(coverted, p.Key, p.Value);
@@ -114,6 +133,7 @@ namespace YukarinetteMisakuraFilterPlugin
         public bool ApproveConerting(int probability)
         {
             var rval = r.Next(100);
+            LOG.Info($"rval:{rval}");
             return rval < probability;
         }
     }
