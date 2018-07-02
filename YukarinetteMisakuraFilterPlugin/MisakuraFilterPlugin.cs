@@ -97,10 +97,10 @@ namespace YukarinetteMisakuraFilterPlugin
         public string Convert2Misakura(string str)
         {
             string ret = str;
+            var coverted = string.Copy(str);
             int probability = (int)_SettingPanel.slider.Value;
             if (ApproveConerting(probability))
             {
-                var coverted = string.Copy(str);
                 foreach (var p in misakuraPatterns)
                 {
                     coverted = Regex.Replace(coverted, p.Key, p.Value);
